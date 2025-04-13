@@ -34,12 +34,6 @@ const Question = ({
     }
   }, [timeLeft, onTimeUp]);
 
-  const getTimerColor = () => {
-    if (timeLeft > 20) return "text-green-600";
-    if (timeLeft > 10) return "text-yellow-600";
-    return "text-red-600 animate-pulse";
-  };
-
   const handleWordSelect = (word: string, blankIndex: number) => {
     const newSelectedWords = [...selectedWords];
 
@@ -80,7 +74,7 @@ const Question = ({
                 onClick={() => handleWordUnselect(index)}
                 className={`inline-block mx-1 px-2 py-1 border-b-2 min-w-[100px] ${
                   selectedWords[index]
-                    ? "border-blue-500 text-blue-600 cursor-pointer"
+                    ? "border-[rgba(69,63,225,1)] text-[rgba(69,63,225,1)] cursor-pointer"
                     : "border-gray-300 text-gray-400"
                 }`}
               >
@@ -94,34 +88,27 @@ const Question = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+    <div className="w-[975px] h-[650px] bg-white rounded-xl shadow-lg overflow-auto relative">
       {/* Timer Section */}
-      <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg border-2 border-gray-200">
-        <div className="text-center">
-          <div className="text-sm font-medium text-gray-500 mb-1">
-            Time Remaining
-          </div>
-          <div className={`text-3xl font-bold ${getTimerColor()}`}>
-            {timeLeft}s
-          </div>
-        </div>
+      <div className="absolute top-4 right-4">
+        <span className="text-gray-600">{timeLeft}s</span>
       </div>
 
-      <div className="p-8">
+      <div className="p-8 h-full flex flex-col">
         <div className="flex justify-between items-center mb-6">
           <div className="text-lg font-semibold text-gray-700">
             Question {currentQuestion}/{totalQuestions}
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="flex-1 space-y-6 overflow-y-auto">
           <h2 className="text-xl font-bold text-gray-800">
             Fill in the blanks with the appropriate words
           </h2>
 
-          <div className="bg-white p-6 rounded-lg">{renderQuestionText()}</div>
+          <div className="bg-white rounded-lg">{renderQuestionText()}</div>
 
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center mt-4">
             {availableWords.map((word) => (
               <button
                 key={word}
@@ -131,7 +118,7 @@ const Question = ({
                     handleWordSelect(word, firstEmptyIndex);
                   }
                 }}
-                className="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors duration-200"
+                className="px-4 py-2 text-[rgba(69,63,225,1)] bg-[rgba(69,63,225,0.1)] hover:bg-[rgba(69,63,225,0.15)] rounded-lg transition-colors duration-200"
               >
                 {word}
               </button>
@@ -139,11 +126,12 @@ const Question = ({
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-auto pt-4">
           <button
             onClick={() => onAnswerSubmit(selectedWords)}
             disabled={selectedWords.some((word) => !word)}
-            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+            style={{ backgroundColor: "rgba(69, 63, 225, 1)" }}
+            className="w-full px-6 py-3 text-white rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
           >
             Next
           </button>
