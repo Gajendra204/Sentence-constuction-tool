@@ -1,14 +1,16 @@
 import axios from 'axios';
 import { QuizData } from '../types';
 
-const API_URL = 'http://localhost:3001/data'; // JSON server endpoint for questions data
+/** Base URL for the quiz API */
+const API_URL = 'http://localhost:3001/data';
+
 
 export const fetchQuizData = async (): Promise<QuizData> => {
   try {
-    // Fetch the data which contains the questions
+    // Fetch questions data from the API
     const response = await axios.get(API_URL);
     
-    // Construct the complete quiz data structure
+    // Construct and validate the quiz data structure
     const quizData: QuizData = {
       status: 'SUCCESS',
       data: {
@@ -27,7 +29,8 @@ export const fetchQuizData = async (): Promise<QuizData> => {
       }
     };
 
-    console.log('Quiz Data Structure:', quizData); // Debug log
+    // Log data structure for debugging
+    console.log('Quiz Data Structure:', quizData);
     return quizData;
   } catch (error) {
     console.error('Error fetching quiz data:', error);

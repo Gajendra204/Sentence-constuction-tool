@@ -1,15 +1,35 @@
 import { useState, useEffect } from "react";
 import { Question as QuestionType } from "../types";
 
+/**
+ * Props interface for the Question component
+ * @interface QuestionProps
+ */
 interface QuestionProps {
+  /** The current question data to be displayed */
   questionData: QuestionType;
+  /** The current question number (1-based index) */
   currentQuestion: number;
+  /** Total number of questions in the quiz */
   totalQuestions: number;
+  /** Time remaining for the current question in seconds */
   timeLeft: number;
+  /** Callback function when user submits an answer */
   onAnswerSubmit: (selectedAnswers: string[]) => void;
+  /** Callback function when timer reaches zero */
   onTimeUp: () => void;
 }
 
+/**
+ * Question Component
+ * Displays a single question with fill-in-the-blank format where users can
+ * select words from available options to complete the sentence.
+ * Features include:
+ * - Timer countdown
+ * - Word selection/unselection mechanism
+ * - Dynamic blank spaces that update as words are selected
+ * - Next button that enables when all blanks are filled
+ */
 const Question = ({
   questionData,
   currentQuestion,
@@ -18,22 +38,32 @@ const Question = ({
   onAnswerSubmit,
   onTimeUp,
 }: QuestionProps) => {
+  // Track selected words for each blank space
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
+  // Track available words that can be selected
   const [availableWords, setAvailableWords] = useState<string[]>([]);
 
-  // Initialize available words and blanks
+ 
+  // Initialize available words and blank spaces when question changes
+
   useEffect(() => {
     setAvailableWords([...questionData.options]);
     setSelectedWords(Array(questionData.correctAnswer.length).fill(""));
   }, [questionData]);
 
-  // Handle timer
+  
+   // Handle timer expiration
   useEffect(() => {
     if (timeLeft === 0) {
       onTimeUp();
     }
   }, [timeLeft, onTimeUp]);
 
+  /**
+   * Handles the selection of a word for a specific blank space
+   * @param word - The word being selected
+   * @param blankIndex - The index of the blank space where the word will be placed
+   */
   const handleWordSelect = (word: string, blankIndex: number) => {
     const newSelectedWords = [...selectedWords];
 
@@ -50,6 +80,10 @@ const Question = ({
     setAvailableWords(availableWords.filter((w) => w !== word));
   };
 
+  /**
+   * Handles removing a word from a blank space
+   * @param blankIndex - The index of the blank space to clear
+   */
   const handleWordUnselect = (blankIndex: number) => {
     const wordToReturn = selectedWords[blankIndex];
     if (wordToReturn) {
@@ -60,6 +94,10 @@ const Question = ({
     }
   };
 
+  /**
+   * Renders the question text with interactive blank spaces
+   * @returns JSX element with the formatted question and blank spaces
+   */
   const renderQuestionText = () => {
     if (!questionData.question) return null;
 
@@ -88,7 +126,7 @@ const Question = ({
   };
 
   return (
-    <div className="w-[975px] h-[650px] bg-white rounded-xl shadow-lg overflow-auto relative">
+    <div className="w-full max-w-[975px] h-[650px] bg-white rounded-xl shadow-lg overflow-auto relative">
       {/* Timer Section */}
       <div className="absolute top-4 right-4">
         <span className="text-gray-600">{timeLeft}s</span>
